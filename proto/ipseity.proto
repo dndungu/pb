@@ -1,0 +1,71 @@
+syntax = "proto3";
+
+package ipseity;
+
+service Ipseity {
+  rpc CreateIdentity(Identity) returns (Id) {}
+  rpc UpdateIdentitySecret(UpdateIdentitySecretRequest) returns (Empty) {}
+  rpc UpdateIdentityRoles(UpdateIdentityRolesRequest) returns (Empty) {}
+  rpc FindIdentityById(Id) returns (Identity) {}
+  rpc FindIdentityByCredentials(Credentials) returns (Identity) {}
+  rpc DeleteIdentity(Id) returns(Empty) {}
+  rpc CreateRole(Role) returns (Id) {}
+  rpc FindRoleById(Id) returns (Role) {}
+  rpc ListRole(ListFilter) returns (stream Role) {}
+  rpc UpdateRole(Role) returns (Empty) {}
+  rpc DeleteRole(Id) returns (Empty) {}
+}
+
+message Credentials {
+  string key = 1;
+  string secret = 2;
+  enum Provider {
+    BASIC = 0;
+    PASSWORD = 1;
+    FACEBOOK = 2;
+    GOOGLE = 3;
+    TWITTER = 4;
+  }
+  Provider provider = 3;
+}
+
+message Grant {
+  int32 id = 1;
+  string name = 2;
+  string notes = 3;
+}
+
+message Role {
+  int32 id = 1;
+  string name = 2;
+  repeated string tags = 3;
+  repeated Grant grants = 4;
+}
+
+message Identity {
+  int32 id = 1;
+  Credentials credential = 2;
+  repeated int32 roleIds = 3;
+}
+
+message Empty {}
+
+message UpdateIdentitySecretRequest {
+  int32 id = 1;
+  string secret = 2;
+}
+
+message UpdateIdentityRolesRequest {
+  int32 id = 1;
+  repeated int32 roles = 2;
+}
+
+
+message Id {
+  int32 id = 1;
+}
+
+message ListFilter {
+  int32 offset = 1;
+  int32 limit = 2;
+}
